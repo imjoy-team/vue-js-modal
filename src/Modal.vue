@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="visible"
+    v-show="visible"
     :class="containerClass"
   >
     <transition
@@ -30,7 +30,7 @@
       @after-leave="afterModalTransitionLeave"
     >
       <div
-        v-if="visibility.modal"
+        v-show="visibility.modal"
         ref="modal"
         :aria-expanded="visibility.modal.toString()"
         :class="modalClass"

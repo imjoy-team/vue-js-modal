@@ -38,7 +38,15 @@
         role="dialog"
         aria-modal="true"
       >
-        <slot/>
+        <div
+          :style="{
+            'pointer-events': resizing ? 'none' : 'auto',
+            width: '100%',
+            height: '100%'
+          }"
+        >
+          <slot />
+        </div>
         <resizer
           v-if="resizable && !isAutoHeight"
           :min-width="minWidth"
@@ -46,6 +54,7 @@
           :max-width="maxWidth"
           :max-height="maxHeight"
           @resize="onModalResize"
+          @resize-stop="resizing = false"
         />
       </div>
     </transition>
@@ -159,6 +168,10 @@ export default {
         return value === 'auto' || validateNumber(value)
       }
     },
+    fullscreen: {
+      type: Boolean,
+      default: false
+    },
     pivotX: {
       type: Number,
       default: 0.5,
@@ -180,6 +193,7 @@ export default {
   data() {
     return {
       visible: false,
+      resizing: false,
 
       visibility: {
         modal: false,
@@ -379,15 +393,23 @@ export default {
      * CSS styles for position and size of the modal
      */
     modalStyle() {
-      return [
-        this.stylesProp,
-        {
+      let rect
+      if (this.fullscreen)
+        rect = {
+          top: '0px',
+          left: '0px',
+          width: '100%',
+          height: '100%'
+        }
+      else {
+        rect = {
           top: this.position.top + 'px',
           left: this.position.left + 'px',
           width: this.trueModalWidth + 'px',
           height: this.isAutoHeight ? 'auto' : this.trueModalHeight + 'px'
         }
-      ]
+      }
+      return [this.stylesProp, rect]
     },
 
     isComponentReadyToBeDestroyed() {
@@ -527,6 +549,7 @@ export default {
      * Event handler which is triggered on modal resize
      */
     onModalResize(event) {
+      this.resizing = true
       this.modal.widthType = 'px'
       this.modal.width = event.size.width
 

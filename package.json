@@ -75,6 +75,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
+    "gh-pages": "^2.2.0",
     "resize-observer-polyfill": "^1.5.1"
   }
 }

@@ -305,7 +305,7 @@ export default {
         trueModalHeight
       } = this
 
-      const maxLeft = viewportWidth - trueModalWidth
+      const maxLeft = Math.max(viewportWidth - trueModalWidth, 0)
       const maxTop = Math.max(viewportHeight - trueModalHeight, 0)
 
       const left = shiftLeft + pivotX * maxLeft
@@ -530,7 +530,7 @@ export default {
     },
 
     onWindowResize() {
-      this.viewportWidth = windowWidthWithoutScrollbar()
+      this.viewportWidth = window.innerWidth
       this.viewportHeight = window.innerHeight
 
       this.ensureShiftInWindowBounds()
@@ -708,7 +708,7 @@ export default {
           event.preventDefault()
         }
 
-        const handleDraggableMouseup = event => {
+        const handleDraggableMouseup = () => {
           this.ensureShiftInWindowBounds()
 
           document.removeEventListener('mousemove', handleDraggableMousemove)
@@ -717,7 +717,7 @@ export default {
           document.removeEventListener('mouseup', handleDraggableMouseup)
           document.removeEventListener('touchend', handleDraggableMouseup)
 
-          event.preventDefault()
+          // event.preventDefault()
         }
 
         dragger.addEventListener('mousedown', handleDraggableMousedown)
@@ -786,6 +786,8 @@ export default {
 }
 
 .vm--modal {
+  max-width: 100%;
+  max-height: 100%;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
